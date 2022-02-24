@@ -1,0 +1,13 @@
+package: name='b.a' versionCode='1' versionName='' platformBuildVersionName=''
+sdkVersion:'8'
+application-icon-120:'res/drawable-ldpi/a.png'
+application: label='' icon='res/drawable-ldpi/a.png'
+launchable-activity: name='b.a.M'  label='' icon=''
+feature-group: label=''
+  uses-feature: name='android.hardware.faketouch'
+  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+main
+supports-screens: 'small' 'normal' 'large'
+supports-any-density: 'true'
+locales: '--_--'
+densities: '120'

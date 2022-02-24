@@ -1,0 +1,22 @@
+package: name='com.iamyub.AndTTTip' versionCode='1' versionName='1.0.1beta' platformBuildVersionName=''
+application-label:'Are you OK with Android phone?'
+application-label-ko:'너 안드로이드 쫌 하니?'
+application-icon-120:'res/drawable-ldpi/icon.png'
+application-icon-160:'res/drawable-mdpi/icon.png'
+application-icon-240:'res/drawable-hdpi/icon.png'
+application: label='Are you OK with Android phone?' icon='res/drawable-mdpi/icon.png'
+application-debuggable
+launchable-activity: name='com.iamyub.AndTTTip.index'  label='Are you OK with Android phone?' icon=''
+sdkVersion:'4'
+uses-permission: name='android.permission.INTERNET'
+feature-group: label=''
+  uses-feature: name='android.hardware.faketouch'
+  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+  uses-feature: name='android.hardware.screen.portrait'
+  uses-implied-feature: name='android.hardware.screen.portrait' reason='one or more activities have specified a portrait orientation'
+main
+other-activities
+supports-screens: 'small' 'normal' 'large'
+supports-any-density: 'true'
+locales: '--_--' 'ko'
+densities: '120' '160' '240'

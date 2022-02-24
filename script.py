@@ -9,7 +9,7 @@ import csv
 ADB_NAME = "adb"
 AAPT_NAME = "aapt"
 
-path = './sample'
+path = './apks'
 
 apks = os.listdir(path)
 
@@ -47,24 +47,32 @@ def generateLogcat(apkName, package):
 def get_packagename(path, apkName):
     aapt = []
     os.system(f'aapt dump badging {path}> ./logs/'+apkName+'.txt')
-    with open('./logs/'+apkName+'.txt', 'rb') as f:
-        p1 = "package: name='(.+?)'"
-        results1 = re.finditer(pattern=p1, string=f.readline().decode('utf-8'))
-        for r in results1:
-            packagename = r.group(1)
-            aapt.append(packagename)
-        p2 = "launchable-activity: name='(.+?)'"
-        st = str(f.readlines())
-        results2 = re.findall(p2, st)
-        activity = results2[0]
-        aapt.append(activity)
-        print("Reading package done")
-        generateLogcat(apkName, aapt[0])
-    return aapt
+    if('./logs/'+apkName+'.txt'):
+        with open('./logs/'+apkName+'.txt', 'rb') as f:
+            p1 = "package: name='(.+?)'"
+            results1 = re.finditer(
+                pattern=p1, string=f.readline().decode('utf-8'))
+            for r in results1:
+                packagename = r.group(1)
+                aapt.append(packagename)
+            p2 = "launchable-activity: name='(.+?)'"
+            st = str(f.readlines())
+            results2 = re.findall(p2, st)
+            if results2:
+                activity = results2[0]
+                aapt.append(activity)
+                print("Reading package done")
+                generateLogcat(apkName, aapt[0])
+                return aapt
+            else:
+                print(path)
+                print("Corrupted apk found. Removing apk...")
+                os.remove(path)
+                print("Corrupted apk removed.....")
 
 
 def generateCSV(columns, data):
-    print(columns)
+    print(data[0])
     with open('Output.csv', 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=columns)
         writer.writeheader()
@@ -306,14 +314,15 @@ def findExistanceSignature(apk):
         'android.intent.action.ACTION_POWER_CONNECTED': 0,
     }
 
-    logFile = open('./logcat/'+apk+'.txt', 'r')
-    lines = logFile.read()
-    for key in permission_dict:
-        if(key in lines):
-            permission_dict[key] = lines.count(key)
+    if ('./logcat/'+apk+'.txt'):
+        logFile = open('./logcat/'+apk+'.txt', 'r')
+        lines = logFile.read()
+        for key in permission_dict:
+            if(key in lines):
+                permission_dict[key] = lines.count(key)
 
-    features.append(permission_dict)
-    return list(permission_dict.keys())
+        features.append(permission_dict)
+        return list(permission_dict.keys())
 
 
 print(checkADB())
@@ -321,15 +330,17 @@ print(checkADB())
 global permissionsColumns, signatureColumns
 
 for apk in apks:
-    installAPK('./sample/'+apk)
-    result = get_packagename('./sample/'+apk, apk)
-    print(result[0])
+    installAPK('./apks/'+apk)
+    result = get_packagename('./apks/'+apk, apk)
     permissionsColumns = findExistance(apk)
     signatureColumns = findExistanceSignature(apk)
 
 temp = []
 temp = permissionsColumns + signatureColumns
 
-print(temp)
+finalized = []
 
-generateCSV(temp, features)
+for i in range(0, len(features), 2):
+    finalized.append({**features[i], **features[i+1]})
+
+generateCSV(temp, finalized)
